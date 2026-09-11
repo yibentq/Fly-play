@@ -22,40 +22,43 @@
   .go{margin-top:12px;color:#c9ffe2;letter-spacing:2px;animation:bl 1.1s steps(2) infinite}
   @keyframes bl{50%{opacity:.25}}
 
-  /* -------- 手机端虚拟摇杆 / 按键 -------- */
-  #touchUI{position:fixed;left:0;right:0;bottom:0;top:0;z-index:20;pointer-events:none;display:none}
+  /* -------- 手机端：强制横屏体验 + 全功能触控 -------- */
+  #touchUI{position:fixed;inset:0;z-index:20;pointer-events:none;display:none}
   .touch-enabled #touchUI{display:block}
-  /* 小型功能按钮：R / 暂停 / HUD / 天气 */
   .tbtn{position:absolute;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;
-    display:flex;align-items:center;justify-content:center;border-radius:50%;
-    border:1px solid #2f9a63;background:rgba(6,20,13,.55);color:#9dffcb;
-    font:600 12px "Cascadia Mono",monospace;letter-spacing:1px;box-shadow:0 0 12px #021 inset;}
+    display:flex;align-items:center;justify-content:center;border-radius:10px;
+    border:1px solid #2f9a63;background:rgba(6,20,13,.62);color:#9dffcb;
+    font:600 12px "Cascadia Mono",monospace;letter-spacing:1px;box-shadow:0 0 12px #021 inset}
   .tbtn.on{background:rgba(70,255,158,.38);color:#04140d;box-shadow:0 0 14px #7dffb0}
-  .tbtn.small{width:44px;height:44px;font-size:11px}
-  #btnR   {left:16px;  top:14px}
-  #btnP   {left:68px;  top:14px}
-  #btnHUD {left:120px; top:14px}
-  #btnWX  {left:172px; top:14px}
-  #btnSFX {left:224px; top:14px}
+  .tbtn.small{width:42px;height:34px;font-size:11px}
+  #btnR{left:12px;top:12px} #btnP{left:60px;top:12px} #btnHUD{left:108px;top:12px}
+  #btnC{left:156px;top:12px} #btnWX{left:204px;top:12px} #btnSFX{left:252px;top:12px}
+  #btnDown{left:300px;top:12px} #btnUp{left:348px;top:12px}
+  #wxTag{position:absolute;right:12px;top:12px;font-size:11px;color:#9dffcb;letter-spacing:1px;
+    background:rgba(6,20,13,.62);border:1px solid #2f9a63;border-radius:4px;padding:4px 8px;pointer-events:none}
+  #sfxTag{position:absolute;right:12px;top:39px;font-size:10px;color:#9dffcb;letter-spacing:1px;
+    background:rgba(6,20,13,.62);border:1px solid #2f9a63;border-radius:4px;padding:3px 7px;pointer-events:none}
 
-  /* 双摇杆：左=油门（竖向），右=俯仰/滚转（十字方向） */
+  /* 双摇杆：左=油门，右=俯仰/滚转 */
   .stick-base{position:absolute;pointer-events:auto;touch-action:none;border-radius:50%;
     border:1px solid #2f9a63;background:rgba(6,20,13,.42);box-shadow:0 0 16px #021 inset}
   .stick-knob{position:absolute;left:50%;top:50%;border-radius:50%;pointer-events:none;
     background:rgba(70,255,158,.42);border:1px solid #bff7da;box-shadow:0 0 12px #7dffb0;
     transform:translate(-50%,-50%);transition:box-shadow .15s}
   .stick-base.on .stick-knob{background:rgba(70,255,158,.7)}
-  #stickThrottle{left:22px;bottom:22px;width:104px;height:104px}
-  #stickThrottle .stick-knob{width:44px;height:44px}
-  #stickAttitude{right:22px;bottom:22px;width:128px;height:128px}
-  #stickAttitude .stick-knob{width:52px;height:52px}
+  #stickThrottle{left:max(16px,env(safe-area-inset-left));bottom:max(16px,env(safe-area-inset-bottom));width:clamp(92px,18vw,128px);height:clamp(92px,18vw,128px)}
+  #stickThrottle .stick-knob{width:42%;height:42%}
+  #stickAttitude{right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));width:clamp(108px,21vw,150px);height:clamp(108px,21vw,150px)}
+  #stickAttitude .stick-knob{width:41%;height:41%}
   .stick-label{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);
     font-size:10px;color:#39875f;letter-spacing:1px;white-space:nowrap}
-  #wxTag{position:absolute;right:24px;top:64px;font-size:11px;color:#9dffcb;letter-spacing:1px;
-    background:rgba(6,20,13,.55);border:1px solid #2f9a63;border-radius:4px;padding:3px 8px;pointer-events:none}
-  #sfxTag{position:absolute;right:24px;top:94px;font-size:11px;color:#9dffcb;letter-spacing:1px;
-    background:rgba(6,20,13,.55);border:1px solid #2f9a63;border-radius:4px;padding:3px 8px;pointer-events:none}
-  @media (min-width:820px){ #touchUI{display:none !important} }
+  #portraitHint{display:none}
+  @media (min-width:820px){#touchUI{display:none!important}}
+  @media (max-width:819px) and (orientation:portrait){
+    #portraitHint{display:flex;position:fixed;inset:0;z-index:100;background:#000;align-items:center;justify-content:center;
+      color:#9dffcb;font-size:16px;letter-spacing:2px;text-align:center;padding:24px;box-sizing:border-box}
+    #portraitHint span{border:1px solid #2f9a63;padding:18px 24px;background:#000806;box-shadow:0 0 30px #063d24 inset}
+  }
 </style>
 </head>
 <body>
@@ -73,7 +76,7 @@
     <tr><td><kbd>V</kbd></td><td>切换天气：雨天 → 大风 → 黑夜</td></tr>
     <tr><td><kbd>M</kbd></td><td>音效开关：引擎声 / 撞机音 / 穿云与大风风声</td></tr>
   </table>
-  <div class="dim">手机端：左摇杆 = 油门，右摇杆 = 俯仰 / 滚转，松手自动回中。</div>
+  <div class="dim">手机端横屏：左摇杆 = 油门，右摇杆 = 俯仰 / 滚转，顶部按钮覆盖电脑端全部功能，松手自动回中。</div>
   <div class="dim">滚转 45° 时偏航角速度线性到达 90°/s，构成协调转弯。<br>
   灰蓝色 <b>#</b> 为楼房（琥珀色为亮着的窗户），绿色 <b>&amp;</b> 为树木，灰色 <b>=</b> 与黄色虚线为道路，天空为黑底。</div>
   <div class="go">▶ 点击任意处 / 按任意键 起飞</div>
@@ -84,9 +87,12 @@
   <div class="tbtn small" id="btnR">R</div>
   <div class="tbtn small" id="btnP">⏸</div>
   <div class="tbtn small" id="btnHUD">HUD</div>
+  <div class="tbtn small" id="btnC">COL</div>
   <div class="tbtn small" id="btnWX">WX</div>
-  <div id="wxTag">雨天</div>
   <div class="tbtn small" id="btnSFX">SFX</div>
+  <div class="tbtn small" id="btnDown">RES−</div>
+  <div class="tbtn small" id="btnUp">RES+</div>
+  <div id="wxTag">雨天</div>
   <div id="sfxTag">ON</div>
 
   <div class="stick-base" id="stickThrottle">
@@ -98,6 +104,7 @@
     <span class="stick-label">俯仰 / 滚转</span>
   </div>
 </div>
+<div id="portraitHint"><span>↻ 请将手机横向旋转<br><small>横屏后即可使用完整飞行控制</small></span></div>
 
 <script>
 'use strict';
@@ -1185,6 +1192,15 @@ if (typeof window !== 'undefined' && window.addEventListener) {
   document.documentElement.classList.add('touch-enabled');
 
   // 单击一次触发一次的功能键（重生 / 暂停 / HUD / 天气）
+  function lockLandscape() {
+    try {
+      if (screen.orientation && screen.orientation.lock) {
+        var p = screen.orientation.lock('landscape');
+        if (p && p.catch) p.catch(function(){});
+      }
+    } catch (e) {}
+  }
+
   function tapBtn(id, fn, vib) {
     var el = document.getElementById(id);
     if (!el) return;
